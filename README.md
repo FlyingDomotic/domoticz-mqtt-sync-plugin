@@ -29,7 +29,7 @@ Follow these steps:
 1. Clone repository into your Domoticz plugins folder:
 ```
 cd domoticz/plugins
-git clone https://github.com/FlyingDomotic/domoticz-mqtt-sync.git MqttSync
+git clone https://github.com/FlyingDomotic/domoticz-mqtt-sync-plugin.git MqttSync
 ```
 2. Restart Domoticz,
 3. Go to "Hardware" page and add new item with type "MQTT Sync with LAN interface",
@@ -44,7 +44,7 @@ Suivez ces étapes :
 1. Clonez le dépôt GitHub dans le répertoire plugins de Domoticz:
 ```
 cd domoticz/plugins
-git clone https://github.com/FlyingDomotic/domoticz-mqtt-sync.git MqttSync
+git clone https://github.com/FlyingDomotic/domoticz-mqtt-sync-plugin.git MqttSync
 ```
 2. Redémarrer Domoticz,
 3. Allez dans la page "Matériel" du bouton "configuration" et ajouter une entrée de type "MQTT Sync with LAN interface",
