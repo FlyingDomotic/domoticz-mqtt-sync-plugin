@@ -202,8 +202,117 @@ Note: Tous les idx sont ceux des dispositifs du maître
 
 ## Technical implementation/Mise en oeuvre technique
 
-[To be written/A écrire]
+[En Anglais seulement, le code étant écrit dans cette langue]
+
+Basics:
+	- For each synchronized device, slave (remote) MQTT contains 3 topics based on master device's idx:
+		* one topic containing device parameters (all useful parameters to create/update device)
+			. written by master/read by slave
+		* one topic containing device value (nValue/sValue/Color)
+			. written by master/read by slave
+		* one topic containing slave device command (Command/Level/Color)
+			. written by slave/read by master (if authorized)
+	- Master instance:
+		* updates devices parameters each time it starts (ToDo: deleting those not used anymore)
+		* updates device value:
+			. when (re)connected to master MQTT
+			. when (re)connected to slave MQTT
+			. when master device changes
+		* subscribes to authorized slave device changes:
+			. it updates master value with slave change if authorized. As topic is not marked "retained", change is lost if master not listening. However, slave won't receive feedback of its change.
+	- Slave instance:
+		* create/updates devices each time it (re)connects to slave MQTT as topics are marked "retained". They will also be updated each time master restarts. (ToDo: deleting those not used anymore)
+		* subscribes to master device changes:
+			. it updates its value when master changes (and at startup as marked "retained")
+		* send (allowed) device changes to master:
+			. device update will come from master as nothing is propagated to local slace instance by plugin.
+	- In addition, one topic for each site is created, containing plug-in version and last heartbeat time
+
+Master implementation:
+	- At startup (onStart):
+		* Load settings (loadSettings)
+		* Request list of device IDX through Domoticz API (requestName2IdxData, which opens HTTP connection)
+	- When HTTP connection is opened (onConnect-> onHttpConnect), request for API device list(askForDeviceList)
+	- When Domoticz device list if received from  API (onMessage):
+		* Create internal device list from JSON configuration file (loadName2Idx), don't set nValue, sValue nor color.
+		* Connect to master MQTT (connectToMqttMaster)
+	- When connected to master MQTT (onConnect->onMasterConnected):
+		* Send connection ID
+	- When connection id acknowledgment is received (onMessage->onMasterConnected)
+		* Set Last Will Testament
+		* Subscribe to domoticz/out changes (askForDomoticzChanges)
+	- When domoticz/out subscription is received (onMessage->onMasterMqttSubAck)
+		* Request database backup (requestBackupDatabaseData, which opens HTTP connection)
+	- When HTTP connection is opened (onConnect-> onHttpConnect), request database copy (askForBackupDatabase)
+	- When receiving database copy is received (onMessage->onHttpBackupDatabase):
+		* Save database to disk
+		* Open database
+		* Load device definition from database (loadDefinitionsFromDb)
+		* Close database and (try to) delete it
+		* Connect to slave MQTT (connectToMqttSlaveOnMaster)
+	- When slave MQTT connects (onConnect->onSlaveConnected)
+		* Send connection ID (acknowledged will be ignored)
+	- When connection ID is acknowledged (onConnect->onSlaveMqttConAck):
+		* Send Last Will Testament
+		* Send device parameters and values to slave (sendParametersAndValuesToSlave)
+		* Subscribe to slave values change (subscribeSlaveValuesFromMaster), acknowledgment will be ignored
+	- When receiving a device change from Domoticz (onMessage->onMasterReceived):
+		* Update internal values and send them if connected to slave MQTT
+	- When receiving a device change from slave (onMessage->onSlaveReceived)
+		* Read command set by slave
+		* Check that master change is allowed for this device
+		* Updating master device if value changed
+	- On heartbeat:
+		* Reconnect master and/or slave MQTT if disconnected
+
+Slave implementation:
+	- At startup (onStart):
+		* Load settings (loadSettings)
+		* Connect to slave MQTT (connectToMqttSlaveOnSlave)
+	- When slave MQTT connects (onConnect->onSlaveConnected)
+		* Send connection ID (acknowledged will be ignored)
+	- When connection ID is acknowledged (onConnect->onSlaveMqttConAck):
+		* Send Last Will Testament
+		* Subscribe to master parameters changes, and initial values as "retained" flag is set (subscribeMasterParametersFromSlave), acknowledgment will be ignored
+	- When master parameters are received (onMessage->onSlaveReceived):
+		* Extract device parameters
+		* If (slave local) device exists and type or subtype changes:
+			- Delete it, and save Device ID to recreate a new one with same device ID
+		* If device don't exists (or has just been deleted)
+			- Create device with right parameters, with first unused device ID unless just deleted
+		* Any way modify device parameters (useful just after creation as Domoticz adds plugin name in front of device name)
+		* Subscribe to master value change for this device (subscribeMasterValuesFromSlave)
+	- When master values are received (onMessage->onSlaveReceived):
+		* Updates (slave local) device with master values
+	- When a slave (MqttSync) device changes (onCommand):
+		* Check that device is allowed to send data to master:
+			- Discard change if not
+		* Sends command to master 
 
 ## Security aspects/Aspects de sécurité
 
-[To be written/A écrire]
+Master instance is connected to Master MQTT, Slave MQTT and Master Domoticz, running on Master.
+
+Slave instance is connected to Slave MQTT, Slave Domoticz, running on Slave.
+
+In both cases, plugin runs on local Domoticz instances.
+
+Slave can be running in an unsafe environment, hosting slave MQTT. In this case, Master Domoticz has only outgoing connections (to slave MQTT), which is often seen as safer than accepting incomming connection.
+
+Changes are allowed from master (inside) configuration file. Change allowed flag is sent by Master to Slave in parameters. This is tested in slave, which sends only change request for authorized devices. If slave plugin is compromized (or changes intercepted and mimiked), and sends unauthorized changes to master, master will discard these unauthorized changes.
+
+In addition, you may add another level of restriction, creating a dedicated user on Master, and allowing it to read (an optionaly write) only some devices on Master. Give this user (and password) on Domoticz master URL in master configuration file.
+
+Note that people that can access Domoticz slave instance are able to send device changes for allowed devices. You must protect this instance to avoid "unexpected" changes.
+
+L'instance maître est connectée au serveur MQTT maître, au serveur MQTT esclave, et à l'instance maître Domoticz, et tourne sur le maître.
+
+L'instance esclave est connectée au serveur MQTT esclave, à l'instance esclave Domoticz, et tourne sur l'esclave.
+
+L'esclave peut tourner dans un environnement non sûr, hébergeant le serveur MQTT esclave. Dans ce cas, l'instance Domoticz maître aura seulement une connexion sortante (vers le serveur MQTT esclave), qui est souvent considéré comme plus sûr que d'accepter des connexions entrantes.
+
+Les modifications sont acceptées depuis le fichier de configuration (interne) maître. L'indicateur de modification possible est envoyé par le maître à l'eclave dans les paramètres. L'eclave le teste avant d'envoyer une modification, et bloque les changements non autorisés. Si le plugin esclave est compromis (ou des modifications interceptées et rejouées), et envoye des modifications non autorisées, le maître ignorera ces changements.
+
+De plus, vous pouvez ajouter un niveau supplémentaire de protection en créant un utilisateur dédié sur le maître, et ne l'autoriser à lire (et écrire si souhaité) que certains dispositifs. Donnez ce nom d'utilisateur (et son mot de passe) dans l'URL Domoticz maître dans le fichier de configuration sur le maître.
+
+Noter que les personnes qui peuvent accéder à l'instance Domoticz esclave peuvent envoyer des modifications sur les dispositifs autorisés. Vous vevez protéger cette instance pour éviter des modification non désirées.

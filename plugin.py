@@ -1011,6 +1011,7 @@ def onHttpBackupDatabase(Connection, data):
     # Open database copy
     variables.databaseConnecion = sqlite3.connect(variables.databaseCopyFileName)
     loadDefinitionsFromDb()
+    variables.databaseConnecion.close()
     variables.databaseConnecion = None
     try:
         os.remove(variables.databaseCopyFileName)
