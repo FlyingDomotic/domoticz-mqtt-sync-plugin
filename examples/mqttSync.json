@@ -1,0 +1,25 @@
+{
+	"settings": {
+		"configVersion": "V1.0.2",
+		"masterName": "master",
+		"masterMqttHost": "masterHost",
+		"masterMqttPort": "1883",
+		"masterMqttUser": "masterMqttUser",
+		"masterMqttPassword": "masterMqttPassword",
+		"masterDomoticzOutTopic": "domoticz/out",
+        "masterDomoticzUrl": "http://masterHost:8080",
+		"slaveName": "slave",
+		"slaveMqttHost": "slaveHost",
+		"slaveMqttPort": "1883",
+		"slaveMqttUser": "slaveMqttUser",
+		"slaveMqttPassword": "slaveMqttPassword",
+        "slaveDomoticzUrl": "http://slave:8080",
+        "slaveDevicePrefix": "MqttSync - "
+	},
+	"mapping": [
+		{"idx": 123, "allowSlaveUpdate": true},
+		{"idx": 456, "allowSlaveUpdate": false},
+		{"idx": 789, "name": "My device name", "allowSlaveUpdate": true},
+		{"name": "My other device name", "allowSlaveUpdate": true}
+	]
+}
