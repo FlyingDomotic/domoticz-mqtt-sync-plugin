@@ -24,7 +24,7 @@ Domoticz Mqtt Sync plug-in for Domoticz / Plug-in Mqtt Sync pour Domoticz
 - Make sure that your Domoticz supports Python plugins (https://www.domoticz.com/wiki/Using_Python_plugins).
 
 
-Follow these steps:
+Follow these steps on both master and slave instances:
 
 1. Clone repository into your Domoticz plugins folder:
 ```
@@ -39,7 +39,7 @@ git clone https://github.com/FlyingDomotic/domoticz-mqtt-sync-plugin.git MqttSyn
 - Testé avec Python version 3.7 & Domoticz version 2020.2
 - Vérifiez que votre version de Domoticz supporte les plugins Python (https://www.domoticz.com/wiki/Using_Python_plugins).
 
-Suivez ces étapes :
+Suivez ces étapes sur les iinstances ma^tre et esclave :
 
 1. Clonez le dépôt GitHub dans le répertoire plugins de Domoticz:
 ```
@@ -84,6 +84,15 @@ ou
 ```
 git checkout <fichier modifié>
 ```
+
+## Domotic versions/Versions de Domoticz
+More or less, any versions of Domoticz can be used on master and slave (tested for example with a master on 2020.2 and a slave on 2024.7).
+
+One thing that may being problematic is having to sync a master device with new incompatible option on slave. If this occurs, please open an issue, for me to filter the offending option item.
+
+A peu près n'importe quelles versions de Domoticz peuvent être utilisées sur le maître et l'esclave (j'ai testé, par exemple un maître en 2020.2 et un esclave en 2024.7).
+
+Une chose qui pourrait poser un problème serait d'avoir à synchroniser un dispositis maître avec une option incompatible avec l'esclave. Si celà arrive, merci d'ouvrir une issue, afin que je puisse filtrer l'option fautive.
 
 ## Configuration file/Fichier de configuration
 Configuration is done through a JSON file, (defaut MqttSync.json, but you may name it as you want, for example based on master/slave names). An example is given in /examples folder. It looks like:
