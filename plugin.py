@@ -12,7 +12,7 @@
 #   Flying Domotic -  https://github.com/FlyingDomotic/domoticz-mqtt-sync-plugin.git
 
 """
-<plugin key="domoticz-mqtt-sync" name="MQTT Sync with LAN interface" author="Flying Domotic" version="1.0.1" externallink="https://github.com/FlyingDomoticz/domoticz-mqtt-sync-plugin">
+<plugin key="domoticz-mqtt-sync" name="MQTT Sync with LAN interface" author="Flying Domotic" version="1.0.2" externallink="https://github.com/FlyingDomoticz/domoticz-mqtt-sync-plugin">
     <description>
       Mqtt Sync plug-in<br/><br/>
       Synchronizes (part of) devices from a master instance to a slave one<br/>
@@ -662,7 +662,7 @@ def askForDeviceList(Connection):
         apiParams = "?type=command&param=getdevices&used=true"
     else:
         apiParams = "?type=devices&used=true"
-    if variables.domoticzUsername != "":
+    if variables.domoticzUsername != None and variables.domoticzUsername != "":
         authorizationText = variables.domoticzUsername
         if variables.domoticzPassword !=None and variables.domoticzPassword != "":
             authorizationText += ":" + variables.domoticzPassword
@@ -691,7 +691,7 @@ def askForDeviceList(Connection):
 # Ask Domoticz for Domoticz database copy
 def askForBackupDatabase(Connection):
     marker = makeMarker("askForBackupDatabase")
-    if variables.domoticzUsername != "":
+    if variables.domoticzUsername != None and variables.domoticzUsername != "":
         authorizationText = variables.domoticzUsername
         if variables.domoticzPassword != "":
             authorizationText += ":" + variables.domoticzPassword
