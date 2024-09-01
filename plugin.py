@@ -12,7 +12,7 @@
 #   Flying Domotic -  https://github.com/FlyingDomotic/domoticz-mqtt-sync-plugin.git
 
 """
-<plugin key="domoticz-mqtt-sync" name="MQTT Sync with LAN interface" author="Flying Domotic" version="1.0.0" externallink="https://github.com/FlyingDomoticz/domoticz-mqtt-sync-plugin">
+<plugin key="domoticz-mqtt-sync" name="MQTT Sync with LAN interface" author="Flying Domotic" version="1.0.1" externallink="https://github.com/FlyingDomoticz/domoticz-mqtt-sync-plugin">
     <description>
       Mqtt Sync plug-in<br/><br/>
       Synchronizes (part of) devices from a master instance to a slave one<br/>
@@ -664,7 +664,7 @@ def askForDeviceList(Connection):
         apiParams = "?type=devices&used=true"
     if variables.domoticzUsername != "":
         authorizationText = variables.domoticzUsername
-        if variables.domoticzPassword != "":
+        if variables.domoticzPassword !=None and variables.domoticzPassword != "":
             authorizationText += ":" + variables.domoticzPassword
         authorization = base64.b64encode(authorizationText.encode('ascii')).decode("UTF_8")
         sendData = { 'Verb':'GET',
@@ -724,7 +724,7 @@ def sendSlaveUpdate(Connection):
     marker = makeMarker("sendSlaveUpdate", parameters=F"Parameters={apiParams}")
     if variables.domoticzUsername != "":
         authorizationText = variables.domoticzUsername
-        if variables.domoticzPassword != "":
+        if variables.domoticzPassword != None and variables.domoticzPassword != "":
             authorizationText += ":" + variables.domoticzPassword
         authorization = base64.b64encode(authorizationText.encode('ascii')).decode("UTF_8")
         sendData = { 'Verb':'GET',
