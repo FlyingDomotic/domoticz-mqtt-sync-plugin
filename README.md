@@ -32,7 +32,7 @@ cd domoticz/plugins
 git clone https://github.com/FlyingDomotic/domoticz-mqtt-sync-plugin.git MqttSync
 ```
 2. Restart Domoticz,
-3. Go to "Hardware" page and add new item with type "MQTT Sync with LAN interface",
+3. Go to "Hardware" page and add new item with type "MQTT Sync with network interface",
 4. Select "Master" or "Slave" depending on machine,
 5. Define configuration file on both machines (see later on this document).
 
@@ -47,7 +47,7 @@ cd domoticz/plugins
 git clone https://github.com/FlyingDomotic/domoticz-mqtt-sync-plugin.git MqttSync
 ```
 2. Redémarrer Domoticz,
-3. Allez dans la page "Matériel" du bouton "configuration" et ajouter une entrée de type "MQTT Sync with LAN interface",
+3. Allez dans la page "Matériel" du bouton "configuration" et ajouter une entrée de type "MQTT Sync with network interface",
 5. Sélectionnez "Master" ou "Slave" selon la machine,
 5. Définissez le fichier de configuration sur chaque machine (voir plus bas dans ce document).
 

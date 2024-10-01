@@ -12,7 +12,7 @@
 #   Flying Domotic -  https://github.com/FlyingDomotic/domoticz-mqtt-sync-plugin.git
 
 """
-<plugin key="domoticz-mqtt-sync" name="MQTT Sync with LAN interface" author="Flying Domotic" version="1.0.2" externallink="https://github.com/FlyingDomoticz/domoticz-mqtt-sync-plugin">
+<plugin key="domoticz-mqtt-sync" name="MQTT Sync with network interface" author="Flying Domotic" version="1.0.2" externallink="https://github.com/FlyingDomoticz/domoticz-mqtt-sync-plugin">
     <description>
       Mqtt Sync plug-in<br/><br/>
       Synchronizes (part of) devices from a master instance to a slave one<br/>
