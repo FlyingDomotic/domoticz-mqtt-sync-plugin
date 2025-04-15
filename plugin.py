@@ -1037,7 +1037,7 @@ def onStart():
         connectToMqttSlaveOnSlave()
 
     # Enable heartbeat
-    Domoticz.Heartbeat(30)
+    Domoticz.Heartbeat(15)
 
 # Called when user change a device state
 def onCommand(Unit, Command, Level, sColor):
