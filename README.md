@@ -239,6 +239,10 @@ Note that people that can access Domoticz slave instance are able to send device
     - Création/modification/destruction et mise à jour des dispositifs esclaves automatiques,
     - Les mises à jour de l'esclave peuvent être envoyées sur le maître, si elles sont autorisés dans la configuration.
 
+## Prérequis
+
+Le client Domoticz MQTT ("MQTT Client Gateway with LAN interface") doit être installé et correctement configuré sur le maître et l'esclave.
+
 ## Installation du plug-in
 
 - Testé avec Python version 3.7 & Domoticz version 2020.2
