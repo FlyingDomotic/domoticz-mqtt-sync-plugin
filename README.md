@@ -108,6 +108,10 @@ Change it as follow:
 
     Items not used on an instance are just ignored.
 
+## Use the same MQTT instance for both master and slave
+
+You can set both master and slave instances on the same MQTT server. However, be aware that Domoticz don't like sharing domoticz/in and domoticz/out. When using the same instance, don't forget to set domoticz in and out topics to different values (and update configuration file accordingly).
+
 ## MQTT Topics
 
 mqttSync: Main root topic
@@ -339,6 +343,10 @@ Modifiez le comme suit :
     Les items utilisés uniquement sur l'esclave sont "slaveDomoticzUrl" et "slaveDevicePrefix".
 
     Les items non utilisés par une instance sont simplement ignorés.
+
+## Utulisation de la même instance MQTTT pour le maître et l'esclave
+
+On peut définir le maître et l'esclave sur le même serveur MQTT. Dans ce cas, il faut savoir que Domoticz n'apprécie pas trop partager les topics domoticz in et out. Lorsqu'on utilise la même instance MQTT, ne pas oublier de définir les topics domoticz a des valeurs différentes pour chaque instance Domoticz.
 
 ## Topics MQTT
 
